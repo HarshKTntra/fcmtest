@@ -1,11 +1,8 @@
 // app/javascript/firebase.js
 
 // Include the Firebase SDK
-
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getMessaging } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging.js";
-// import firebase from "/node_modules/@firebase/app";
-// import '../@firebase/messaging';
+import firebase from 'firebase/app';
+import 'firebase/messaging';
 
 // Initialize Firebase
 var firebaseConfig = {
@@ -17,17 +14,7 @@ var firebaseConfig = {
   appId: "1:1014910309107:web:45649b6e521a75e6069d86",
   measurementId: "G-E8QFFEDM3Z",
 };
-
-const firebase = initializeApp(firebaseConfig);
-// firebase.initializeApp(firebaseConfig);
-
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-
-// Initialize Firebase Cloud Messaging and get a reference to the service
-const messaging = getMessaging(app);
+firebase.initializeApp(firebaseConfig);
 
 // Request permission to receive notifications and retrieve device token
 function requestNotificationPermissionAndSendToken() {
@@ -35,9 +22,8 @@ function requestNotificationPermissionAndSendToken() {
   messaging
     .requestPermission()
     .then(function () {
-      // debugger
       console.log('Notification permission granted.');
-      // debugger
+
       messaging
         .getToken()
         .then(function (token) {
