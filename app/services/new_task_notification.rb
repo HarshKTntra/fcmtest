@@ -7,12 +7,12 @@ class NewTaskNotification < ::BaseNotification
     sender = task.user
     title = title(sender.name)
     notification = create_notification(notification_params(title, body, data, receiver))
-    reg_ids = receiver.fcm_token
+    reg_ids = receiver.registration_tokens
     fcm_client.send(reg_ids, options(title, body, fcm_data(data, notification.id))) if reg_ids.present?
   end
 
-  def self.title
-    "T-PUSH sent you a notification"
+  def self.title(sender_name)
+    sender_name.to_s
   end
 
   def self.data

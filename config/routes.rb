@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
+  resources :users do
+    put :user_registration_token, on: :collection, as: 'registration_token'
+  end
+  post '/save_fcm_token', to: 'fcm_tokens#create'
   root to: "home#index"
-  post '/fcm/send', to: 'fcm#send_message'
 end

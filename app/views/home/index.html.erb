@@ -2,8 +2,6 @@
  <div data-controller="firebase">
   <div> Welcome <%= current_user.email %> </div>
     <%= button_to "Sign out", destroy_user_session_path, method: :delete %>
-    <%= javascript_include_tag 'app' %>
-    <%= javascript_include_tag 'messaging_get_token' %>
   </div>
 <% else %>
   <%= button_to "Sign in", new_user_session_path %>
