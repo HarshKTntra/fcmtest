@@ -13,44 +13,42 @@ var firebaseConfig = {
   appId: "1:1014910309107:web:45649b6e521a75e6069d86",
   measurementId: "G-E8QFFEDM3Z",
 };
-
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register("firebase-messaging-sw.js")
+    .then(function (registration) {
+      console.log("Registration successful", registration.scope)
+    }).catch(function (err) {
+      console.log('Failure',err)
+      // Display a notification asking the user to change their browser.
+      // alert("Please change your browser")
+    });
+} else {
+  console.log("service worker is not supported")
+}
 const firebase_app = initializeApp(firebaseConfig);
 const messaging = getMessaging(firebase_app);
 
-requestPermission();
 
-function requestPermission() {
-  console.log("Requesting permission...");
-  Notification.requestPermission().then((permission) => {
-    if (permission === "granted") {
-       // Get registration token
-       console.log("Permission Granted");
-       getToken(messaging, { vapidKey: 'BC6I1XAUIvYhsbwiwB1XcylZ9U9XBbaec6tjzKzOw6CNV-xdSr8ZDYf9mvSvuW2WI1S5bhS72HGzXJCGITzfKlk' })
-       .then((currentToken) => {
-         if (currentToken) {
-           // Send the token to your server and update the UI if necessary
-            console.log('FCM token:', currentToken);
-            // Sending the token to backend
-            sendTokenToBackend(currentToken);
-         } else {
-           console.log('No registration token available.');
-         }
-       })
-       .catch((err) => {
-         console.log('An error occurred while retrieving token. ', err);
-       });
-    } else if (permission === "denied") {
-      alert("You denied for the notification");
-    }
-  });
-}
-
-// messaging.onMessage(function(payload) {
-//   console.log('onMessage: ',payload);
-// });
+getToken(messaging, { vapidKey: 'BC6I1XAUIvYhsbwiwB1XcylZ9U9XBbaec6tjzKzOw6CNV-xdSr8ZDYf9mvSvuW2WI1S5bhS72HGzXJCGITzfKlk' }).then((currentToken) => {
+  if (currentToken) {
+  // Send the token to your server and update the UI if necessary
+  console.log('FCM token:', currentToken);
+  // ...
+  sendTokenToBackend(currentToken)
+  } else {
+  // Show permission request UI
+    console.log('No registration token available. Request permission to generate one.');
+  // ...
+  }
+}).catch((err) => {
+  console.log('An error occurred while retrieving token. ', err);
+  alert("Failed to retrieve the token. Please try again from the login screen.")
+// ...
+});
 
 function sendTokenToBackend(token) {
   const csrfToken = document.querySelector("[name='csrf-token']").content;
+
   fetch(window.location.origin + "/save_fcm_token", {
     method: "POST",
     headers: {
